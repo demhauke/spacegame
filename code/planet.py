@@ -13,7 +13,7 @@ class Planet():
         self.a = info["a"] * (1 + info["e"])
 
 
-        self.station = Station(name)
+        self.station = Station(name, info['buildings'])
 
         self.radius = info["radius"] * 80
 

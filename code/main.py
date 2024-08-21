@@ -85,6 +85,7 @@ class Game():
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
 
         self.planet_station_actions_gui = GUI(self)
+        self.planet_station_inventory_gui = GUI(self)
         self.planet_station_gui = GUI(self)
 
 
@@ -94,22 +95,39 @@ class Game():
         #self.planet_station_gui = GUI(self.screen)
 
         self.planet_station_gui.create_text([self.screen_width / 2, 20], "name")
-        self.planet_station_gui.create_text([self.screen_width / 2, 100], "fahrzeuge", display_not="[]")
+        self.planet_station_gui.create_text([self.screen_width / 2, 100], "raketen", display_not="[]")
 
         self.planet_station_gui.create_button([self.screen_width / 2, self.screen_height - 100], "Map", self.change_to_space_view)
         self.planet_station_gui.create_button([100, self.screen_height - 100], "actions" , self.planet_station_actions_gui.render)
+        self.planet_station_gui.create_button([300, self.screen_height - 100], "inventar" , self.planet_station_inventory_gui.render)
 
         # planet actions
         #self.planet_station_actions_gui = GUI(self.screen)
-        self.planet_station_actions_gui.create_button([100, self.screen_height - 100], "zurück", self.planet_station_gui.render)
 
-        self.planet_station_actions_gui.create_list_of_elements((300, 300), "aktivitäten", get_pressed=self.station_do_activities)
-        self.planet_station_actions_gui.create_list_of_elements((300, 100), "humans")
+        self.planet_station_actions_gui.create_text([self.screen_width * 3 / 4, 100], "Info")
+
+        self.planet_station_actions_gui.create_button([100, self.screen_height - 100], "zurück", self.planet_station_gui.render)
+        self.planet_station_actions_gui.create_button([self.screen_width * 3 / 4, self.screen_height / 2], "Go", self.station_do_activity)
+
+        self.planet_station_actions_gui.create_list_of_elements((300, 300), "aktivitäten", "selected_aktivität_index", get_pressed=self.station_select_activity)
+        self.planet_station_actions_gui.create_list_of_elements((300, 100), "humans", "selected_human_index", get_pressed=self.station_select_human)
+
+        # planet inventory
+
+        self.planet_station_inventory_gui.create_text((self.screen_width / 4, 100), "Station")
+        self.planet_station_inventory_gui.create_text((self.screen_width * 3 / 4, 100), "Rakete")
+
+        self.planet_station_inventory_gui.create_button([100, self.screen_height - 100], "zurück", self.planet_station_gui.render)
+
+        self.planet_station_inventory_gui.create_list_of_elements((self.screen_width / 4 - 100, 200), "inventar_", "selected_human_index", get_pressed=self.station_change_item_from_station_to_rocket)
+        self.planet_station_inventory_gui.create_list_of_elements((self.screen_width * 3 / 4 - 100, 200), "raketen_anzeige", "selected_raketen_index", get_pressed=self.station_select_rakete)
+
+        self.planet_station_inventory_gui.create_list_of_elements((self.screen_width * 3 / 4 - 100, 300), "selected_raketen_inventar", "selected_raketen_index", get_pressed=self.station_change_item_from_rocket_to_station)
+
 
     def planet_station(self):
-        #print(self.current_planet.name)
-
-        self.gui.update()
+        self.gui.update(self)
+        self.current_planet.station.update()
 
     def space_overview(self):
         time = (pygame.time.get_ticks() + self.starttime) / self.speed
@@ -147,8 +165,26 @@ class Game():
                 self.change_to_planet_view(planet)
                 break
 
-    def station_do_activities(self, index):
-        self.current_planet.station.do_activities(index)
+    def station_do_activity(self):
+        self.current_planet.station.do_activity()
+        self.gui.render()
+
+    def station_select_activity(self, index):
+        self.current_planet.station.select_activity(index)
+
+    def station_select_human(self, index):
+        self.current_planet.station.select_human(index)
+
+    def station_select_rakete(self, index):
+        self.current_planet.station.select_rakete(index)
+
+    def station_change_item_from_rocket_to_station(self, index):
+        self.current_planet.station.change_item_at_station(index, self.current_planet.station.raketen[self.current_planet.station.selected_raketen_index], self.current_planet.station)
+        self.gui.render()
+
+    def station_change_item_from_station_to_rocket(self, index):
+        self.current_planet.station.change_item_at_station(index, self.current_planet.station, self.current_planet.station.raketen[self.current_planet.station.selected_raketen_index])
+        self.gui.render()
 
     def change_to_planet_view(self, planet):
         self.current_planet = planet
@@ -167,7 +203,7 @@ class Game():
         time = (pygame.time.get_ticks() + self.starttime) / self.speed
 
         erde.station.create_rocket()
-        rakete = erde.station.fahrzeuge[0]
+        rakete = erde.station.raketen[0]
 
         print(mars.station.fahrzeuge)
         print(erde.station.fahrzeuge)

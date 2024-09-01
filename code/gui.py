@@ -28,7 +28,7 @@ class GUI:
             element.update(game)
 
     def render(self):
-        self.screen.fill("black")
+        #self.screen.fill("black")
         self.game.gui = self
         for element in self.all_elements:
             element.render(self.screen, self.game.current_planet.station)

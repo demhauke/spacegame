@@ -1,12 +1,14 @@
 from rakete import Rakete
+from inventar import Inventar
 import pygame
 
-class Station():
+class Station(Inventar):
     def __init__(self, name, buildings):
-        self.items = {
-            "Steine": 0,
-            "Gold": 0,
-            "Eisen": 0
+        super().__init__()
+
+        self.activity_name_to_method = {
+            "Steine Sammeln": self.sammle_steine
+
         }
 
         self.name = name
@@ -26,6 +28,8 @@ class Station():
 
         self.time0 = pygame.time.get_ticks()
 
+        self.create_rocket()
+
     def do_activity(self):
         try:
             if self.humans[self.selected_human_index] <= 0:
@@ -33,7 +37,8 @@ class Station():
                 #self.humans[self.selected_human_index] += 10
 
                 print(self.selected_aktivität_index + 10)
-                getattr(self, self.aktivitäten[self.selected_aktivität_index])()
+                self.activity_name_to_method[self.aktivitäten[self.selected_aktivität_index]]()
+                #getattr(self, self.aktivitäten[self.selected_aktivität_index])()
         except:
             pass
     
@@ -79,7 +84,7 @@ class Station():
             return []
 
     def get_activitys(self):
-        aktivitäten = ["sammle_steine"]
+        aktivitäten = ["Steine Sammeln"]
         if "raketen bauen" in self.buildings:
             aktivitäten.append("create_rocket")
         if len(self.humans) >= 1 and len(self.raketen) >= 1:
@@ -92,13 +97,6 @@ class Station():
             raketen.append("Rakete")
 
         return raketen
-    
-    def get_inventar(self):
-        inventar = []
-        for key in self.items.keys():
-            inventar.append(f"{key}: {self.items[key]}")
-        return inventar
-
 
     def print_info(self, name):
         for i in (self.humans, self.buildings, self.fahrzeuge):

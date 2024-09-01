@@ -1,4 +1,23 @@
 
+#planet_map = [
+#    [1, 1, 1],
+##    [1, 2, 1],
+#    [1, 1, 1]
+#]
+
+import random
+
+# Map-Größe definieren
+tiles_x = 25  # Anzahl der Kacheln in der Breite
+tiles_y = 9   # Anzahl der Kacheln in der Höhe
+
+# Zufällige planet_map erstellen
+planet_map = [[random.choice([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2]) for _ in range(tiles_x)] for _ in range(tiles_y)]
+
+planet_map[random.randint(0, tiles_y - 1)][random.randint(0, tiles_x - 1)] = 3
+
+TILESIZE = 64
+
 
 planeten = {
     "Merkur": {'a': 57.91, 'T': 0.24, 'e': 0.2056, 'radius': 0.03504, 'buildings': []},

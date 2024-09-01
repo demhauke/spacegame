@@ -23,6 +23,7 @@ class Rakete():
 
     def get_landet(self, time):
         if self.get_x(time) ** 2 + self.get_y(time) ** 2 >= self.destination_planet.get_x(time) ** 2 + self.destination_planet.get_y(time) ** 2:
+            print(f"lande bei {self.destination_planet.name}")
             return True
         return False
 
@@ -48,7 +49,7 @@ class Rakete():
         print(f"starte bei {old.name}")
         if self in old.station.fahrzeuge:
             old.station.fahrzeuge.remove(self)
-        print(f"lande bei {new.name}")
+        #print(f"lande bei {new.name}")
 
     def update(self):
         self.inventar_ = self.get_inventar()

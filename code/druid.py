@@ -1,19 +1,23 @@
 from entity import Entity
 from inventar import Inventar
+from settings import TILESIZE
 import pygame
 
 
 class Druid(Entity, Inventar):
-    def __init__(self, x, y, color, group, planet):
+    def __init__(self, x, y, color, group, planet, items=False):
         super().__init__(x, y, color, group)
-        Inventar().__init__()
+        Inventar().__init__(items)
         self.direction = pygame.math.Vector2()
 
-        self.items = {
-            "Steine": 0,
-            "Gold": 0,
-            "Eisen": 0
-        }
+        if items:
+            self.items = items
+        else:
+            self.items = {
+                "Steine": 0,
+                "Gold": 0,
+                "Eisen": 0
+            }
 
         self.planet = planet
 
@@ -39,7 +43,7 @@ class Druid(Entity, Inventar):
         if self.direction.length() > 0:
             self.direction = self.direction.normalize()
 
-        collision_sprite = self.check_collision(self.planet.all_collactebles)
+        collision_sprite = self.check_collision(self.planet.all_action_items)
 
         self.check_action_e(keys, collision_sprite)
 
@@ -49,11 +53,20 @@ class Druid(Entity, Inventar):
 
         if collision_sprite != False:
 
-            self.append_items(collision_sprite.item, 5)
-            collision_sprite.kill()
+            if collision_sprite.item in self.items.keys():
 
-            print(self.get_inventar())
-        
+                self.append_items(collision_sprite.item, 5)
+                self.planet.kill_on_map(collision_sprite.rect.x / TILESIZE, collision_sprite.rect.y / TILESIZE)
+                collision_sprite.kill()
+                
+
+                print(self.get_inventar())
+                return
+            
+
+            if collision_sprite.item == "rakete":
+                collision_sprite.func()
+            
 
 
 

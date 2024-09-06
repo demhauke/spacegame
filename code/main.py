@@ -30,13 +30,11 @@ class Game():
 
         self.create_gui()
 
-        self.test_to_mars()
-
         self.current_mode = self.space_overview
 
         self.click_on_planet = self.change_to_planet_view
 
-        self.planet_fly_planer = (False, False)
+        self.planet_fly_planer = [False, False]
 
 
     def run(self):
@@ -82,7 +80,7 @@ class Game():
 
     def create_planets(self):
         for planet in planeten.keys():
-            self.all_planets.append(Planet(planet, planeten[planet]))
+            self.all_planets.append(Planet(planet, planeten[planet], self))
 
     def get_planet(self, name):
         for planet in self.all_planets:
@@ -92,46 +90,14 @@ class Game():
     def create_gui(self):
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
 
-        #self.planet_station_actions_gui = GUI(self)
-        #self.planet_station_inventory_gui = GUI(self)
         self.planet_station_gui = GUI(self)
-
 
         self.gui = self.planet_station_gui
 
-        # planet view
-        #self.planet_station_gui = GUI(self.screen)
 
         self.planet_station_gui.create_text([self.screen_width / 2, 20], "name")
-        #self.planet_station_gui.create_text([self.screen_widtddhwawd / 2, 100], "raketen", display_not="[]")
 
         self.planet_station_gui.create_button([self.screen_width / 2, self.screen_height - 100], "Map", self.change_to_space_view)
-        #self.planet_station_gui.create_button([100, self.screen_height - 100], "actions" , self.planet_station_actions_gui.render)
-        #self.planet_station_gui.create_button([300, self.screen_height - 100], "inventar" , #self.planet_station_inventory_gui.render)
-
-        # planet actions
-        #self.planet_station_actions_gui = GUI(self.screen)
-
-        #self.planet_station_actions_gui.create_text([self.screen_width * 3 / 4, 100], "Info")
-
-        #self.planet_station_actions_gui.create_button([100, self.screen_height - 100], "zurück", self.planet_station_gui.render)
-        #self.planet_station_actions_gui.create_button([self.screen_width * 3 / 4, self.screen_height / 2], "Go", self.station_do_activity)
-
-        #self.planet_station_actions_gui.create_list_of_elements((300, 300), "aktivitäten", "selected_aktivität_index", get_pressed=self.station_select_activity)
-        #self.planet_station_actions_gui.create_list_of_elements((300, 100), "humans", "selected_human_index", get_pressed=self.station_select_human)
-
-        # planet inventory
-
-        #self.planet_station_inventory_gui.create_text((self.screen_width / 4, 100), "Station")
-        #self.planet_station_inventory_gui.create_text((self.screen_width * 3 / 4, 100), "Rakete")
-
-        #self.planet_station_inventory_gui.create_button([100, self.screen_height - 100], "zurück", self.planet_station_gui.render)
-
-        #self.planet_station_inventory_gui.create_list_of_elements((self.screen_width / 4 - 100, 200), "inventar_", "selected_human_index", get_pressed=self.station_change_item_from_station_to_rocket)
-        #self.planet_station_inventory_gui.create_list_of_elements((self.screen_width * 3 / 4 - 100, 200), "raketen_anzeige", "selected_raketen_index", get_pressed=self.station_select_rakete)
-
-        #self.planet_station_inventory_gui.create_list_of_elements((self.screen_width * 3 / 4 - 100, 300), "selected_raketen_inventar", "selected_raketen_index", get_pressed=self.station_change_item_from_rocket_to_station)
-
 
     def planet_station(self):
         self.gui.update(self)
@@ -150,12 +116,11 @@ class Game():
         for rakete in self.all_rockets:
             pygame.draw.circle(self.screen, "red", (self.screen_width / 2 + rakete.get_x(time) / self.map_scale, self.screen_height / 2 + rakete.get_y(time) / self.map_scale), 5 / self.map_scale)
 
-            #if rakete.destination_planet.check_collision((rakete.get_x(time), rakete.get_y(time)), time, rakete.destination_planet.radius):
-            #    rakete.destination_planet.station.fahrzeuge.append(rakete)
-            #    self.all_rockets.remove(rakete)
 
             if rakete.get_landet(time):
                 rakete.destination_planet.station.fahrzeuge.append(rakete)
+                for druid in rakete.druids:
+                    rakete.destination_planet.station.druids.append(druid)
                 self.all_rockets.remove(rakete)
 
         x, y = pygame.mouse.get_pos()
@@ -164,11 +129,6 @@ class Game():
 
         for planet in self.all_planets:
             pygame.draw.circle(self.screen, "white", (self.screen_width / 2 + planet.get_x(time) / self.map_scale, self.screen_height / 2 + planet.get_y(time) / self.map_scale), planet.radius / self.map_scale)
-            #pygame.draw.circle(self.screen, "white", (self.screen_width / 2 + planet.get_x(time) / self.map_scale, self.screen_height / 2 + planet.get_y(time) / self.map_scale), planet.radius / self.map_scale + 3, 1)
-            #pygame.draw.circle(self.screen, )
-
-            #if  not pygame.mouse.get_pressed()[0]:
-            #    continue
 
             if self.mousebuttonpressed == False:
                 continue
@@ -176,6 +136,7 @@ class Game():
             if planet.check_collision((x, y), time, planet.radius):
                 print("collision")
                 self.click_on_planet(planet)
+                self.mousebuttonpressed = False
                 break
 
         if self.planet_fly_planer[0] == False:
@@ -190,9 +151,11 @@ class Game():
         self.all_rockets.append(self.planet_fly_planer[0].station.raketen[0])
         self.planet_fly_planer[0].station.raketen[0].fly(self.planet_fly_planer[0], self.planet_fly_planer[1], time)
 
-        self.planet_fly_planer = (False, False)
+        self.planet_fly_planer = [False, False]
+
 
         self.click_on_planet = self.change_to_planet_view
+
 
 
         #self.all_rockets.append(self.planet_fly_planer[0].station.raketen[0])
@@ -220,9 +183,9 @@ class Game():
 
     def select_for_fly(self, planet):
         if self.planet_fly_planer[0] == False:
-            self.planet_fly_planer = (planet, False)
+            self.planet_fly_planer = [planet, False]
         elif self.planet_fly_planer[0] != planet:
-            self.planet_fly_planer = (self.planet_fly_planer[0], planet)
+            self.planet_fly_planer = [self.planet_fly_planer[0], planet]
 
         print(self.planet_fly_planer)
 
@@ -238,42 +201,6 @@ class Game():
         for sprite in self.current_planet.all_sprites:
             sprite.kill()
         self.current_mode = self.space_overview
-        
-
-
-
-    def test_to_mars(self):
-        erde = self.get_planet("Erde")
-        mars = self.get_planet("Mars")
-        time = (pygame.time.get_ticks() + self.starttime) / self.speed
-
-        erde.station.create_rocket()
-        rakete = erde.station.raketen[0]
-
-        print(mars.station.fahrzeuge)
-        print(erde.station.fahrzeuge)
-        print(erde.station.fahrzeuge)
-
-        rakete.fly(erde, mars, time)
-        self.all_rockets.append(rakete)
-
-        print(erde.station.fahrzeuge)
-        print(mars.station.fahrzeuge)
-
-        print(mars.station.items)
-        mars.station.sammle_steine()
-        print(mars.station.items)
-
-        #greift hier auf rakete zu diese ist aber noch gar nicht auf den mars
-        #bitte später fixen
-        mars.station.change_item(mars.station, rakete, "Steine", 1)
-
-        print(mars.station.items)
-        print(rakete.items)
-
-        print(rakete.get_x(time))
-        print(rakete.get_y(time))
-
 
         
 

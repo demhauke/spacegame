@@ -7,7 +7,7 @@ class Rakete():
             "Gold": 0,
             "Eisen": 0
         }
-        self.humans = []
+        self.druids = []
 
         self.x = 0
         self.y = 0

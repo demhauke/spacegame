@@ -2,7 +2,7 @@ import pygame
 from settings import TILESIZE
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, x, y, color, group, item=None):
+    def __init__(self, x, y, color, group, item=None, func=None):
         super().__init__(group)
         
         self.image = pygame.Surface((TILESIZE, TILESIZE))
@@ -13,6 +13,7 @@ class Tile(pygame.sprite.Sprite):
         self.rect.y = y * TILESIZE
 
         self.item = item
+        self.func = func
 
     def do_action(self, kill=False, func=None):
         if func != None:
@@ -23,3 +24,9 @@ class Tile(pygame.sprite.Sprite):
 
     def update(self):
         pass
+
+class Rocket_Station(Tile):
+    def __init__(self, x, y, color, group, item=None):
+        super().__init__(x, y, color, group, item)
+
+        self.rockets = []

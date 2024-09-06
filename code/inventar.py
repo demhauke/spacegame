@@ -1,12 +1,15 @@
 
 
 class Inventar:
-    def __init__(self):
-        self.items = {
-            "Steine": 0,
-            "Gold": 0,
-            "Eisen": 0
-        }
+    def __init__(self, items=False):
+        if items:
+            self.items = items
+        else:
+            self.items = {
+                "Steine": 0,
+                "Gold": 0,
+                "Eisen": 0
+            }
 
     def get_inventar(self):
         inventar = []

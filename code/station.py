@@ -12,7 +12,7 @@ class Station(Inventar):
         }
 
         self.name = name
-        self.humans = [0, 1, 22]
+        self.druids = []
         self.buildings = buildings
         self.fahrzeuge = []
         self.raketen = []
@@ -29,6 +29,9 @@ class Station(Inventar):
         self.time0 = pygame.time.get_ticks()
 
         self.create_rocket()
+
+        if name == "Erde":
+            self.druids.append(Inventar())
 
     def do_activity(self):
         try:
@@ -87,7 +90,7 @@ class Station(Inventar):
         aktivitäten = ["Steine Sammeln"]
         if "raketen bauen" in self.buildings:
             aktivitäten.append("create_rocket")
-        if len(self.humans) >= 1 and len(self.raketen) >= 1:
+        if len(self.druids) >= 1 and len(self.raketen) >= 1:
             aktivitäten.append("fliegen")
         return aktivitäten
     

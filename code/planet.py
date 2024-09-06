@@ -3,11 +3,12 @@ import pygame
 from station import Station
 from tile import Tile
 from druid import Druid
+from inventar import Inventar
 from settings import *
 
 
 class Planet():
-    def __init__(self, name, info):
+    def __init__(self, name, info, game):
         self.name = name
         if name == "Erde":
             print("ja")
@@ -21,28 +22,50 @@ class Planet():
 
         self.radius = info["radius"] * 80
 
+        self.map = info['map']
+
         self.selected = False
 
+
+
         self.all_sprites = pygame.sprite.Group()
-        self.all_collactebles = pygame.sprite.Group()
+        self.all_action_items = pygame.sprite.Group()
         self.all_druids = pygame.sprite.Group()
+
+        self.game = game
+
+    def start_fly(self):
+        if self.station.raketen == []:
+            return
+        
+        self.station.raketen[0].druids.append(Inventar(self.druid.items))
+        self.druid.kill()
+        self.station.druids = []
+        self.game.planet_fly_planer[0] = self
+        self.game.change_to_space_view()
+        self.game.click_on_planet = self.game.select_for_fly
 
     
 
     def create_map(self):
-        for y, x_values in enumerate(planet_map):
+        for y, x_values in enumerate(self.map):
             for x , value in enumerate(x_values):
                 #Tile(x, y, 60, "gray", [self.all_sprites])
                 #if value == 1:
                 #    pass
                     #Tile(x, y, 60, "gray", self.all_sprites)
                 if value == 2:
-                    Tile(x, y, "red", [self.all_sprites, self.all_collactebles], "Steine")
+                    Tile(x, y, "red", [self.all_sprites, self.all_action_items], "Steine")
                 elif value == 3:
-                    Tile(x, y, "purple", self.all_sprites)
+                    Tile(x, y, "purple", [self.all_sprites, self.all_action_items], "rakete", self.start_fly)
+                elif value == 4:
+                    Tile(x, y, "yellow", [self.all_sprites, self.all_action_items], "Gold")
 
         #self.create_druid(2, 2, "white", [self.all_sprites, self.all_druids])
-        Druid(2, 2, "white", [self.all_sprites, self.all_druids], self)
+
+        for druid in self.station.druids:
+            print(druid.items)
+            self.druid = Druid(2, 2, "white", [self.all_sprites, self.all_druids], self, druid.items)
 
 
     def get_x(self, time):
@@ -58,6 +81,9 @@ class Planet():
     
     def create_druid(self, x, y, color, group):
         Druid(x, y, color, group, self)
+
+    def kill_on_map(self, x, y):
+        self.map[int(y)][int(x)] = 0
     
     def update(self, game):
         self.all_sprites.update()
@@ -67,8 +93,3 @@ class Planet():
 
 
 
-
-
-
-
-        

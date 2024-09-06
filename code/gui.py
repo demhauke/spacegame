@@ -14,13 +14,13 @@ class GUI:
 
         self.font = pygame.font.SysFont(None, 48)
 
-    def create_button(self, pos, text, func=nothing, color="black", display_not = "", background_color="gray", selection_possible=False):
+    def create_button(self, pos, text, func=nothing, color="black", display_not = "", background_color=(0, 0, 0, 125), selection_possible=False):
         self.all_elements.append(Button(pos, text, self.font, color, func, display_not, background_color, selection_possible))
 
-    def create_text(self, pos, text, color="black", display_not = "", background_color="gray"):
+    def create_text(self, pos, text, color="black", display_not = "", background_color=(0, 0, 0)):
         self.all_elements.append(Text(pos, text, self.font, color, display_not, background_color))
 
-    def create_list_of_elements(self, pos, get_liste, get_selection_index, color="black", get_pressed=nothing, display_not = "", background_color="gray"):
+    def create_list_of_elements(self, pos, get_liste, get_selection_index, color="black", get_pressed=nothing, display_not = "", background_color=(0, 0, 0)):
         self.all_elements.append(List_of_elements(pos, get_liste, "Type", self.font, color, get_pressed, display_not, background_color, get_selection_index))
 
     def update(self, game):
@@ -31,7 +31,11 @@ class GUI:
         #self.screen.fill("black")
         self.game.gui = self
         for element in self.all_elements:
-            element.render(self.screen, self.game.current_planet.station)
+            element.render(self.game.current_planet)
+
+    def draw(self):
+        for element in self.all_elements:
+            element.draw(self.screen)
 
 class Text:
     def __init__(self, pos, text, font, color, display_not, background_color):
@@ -45,7 +49,7 @@ class Text:
 
         self.offset = 3
         
-    def render(self, screen, info):
+    def render(self, info):
         try: 
             
             value = str(getattr(info, self.text))
@@ -56,11 +60,17 @@ class Text:
             return
         self.rendered_text = self.font.render(value, True, self.color, None) #check this None
         self.rect = self.rendered_text.get_rect(topleft=self.pos)
+        self.surface = pygame.Surface(self.rect.size, pygame.SRCALPHA)
+        self.surface.fill((255, 255, 255, 200))
         self.rect.x = self.pos[0] - self.rendered_text.get_width() / 2
         self.rect = self.rect.inflate(self.offset, self.offset)
-        pygame.draw.rect(screen, self.background_color, self.rect)
-        #self.pos[0] = screen.get_width() / 2 - self.rendered_text.get_width() / 2
+
+    def draw(self, screen):
+        #self.surface.fill((255, 255, 255, 128))
+        #pygame.draw.rect(screen, self.background_color, self.rect)
+        screen.blit(self.surface, self.rect.topleft)
         screen.blit(self.rendered_text, (self.pos[0] - self.rendered_text.get_width() / 2, self.pos[1]))
+        
 
     def update(self, game):
         pass

@@ -15,7 +15,7 @@ tiles_y = 9   # Anzahl der Kacheln in der Höhe
 
 def create_planet_map():
 
-    planet_map = [[random.choice([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 4]) for _ in range(tiles_x)] for _ in range(tiles_y)]
+    planet_map = [[random.choice([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 4]) for _ in range(tiles_x)] for _ in range(tiles_y)]
     planet_map[random.randint(0, tiles_y - 1)][random.randint(0, tiles_x - 1)] = 3
 
     return planet_map

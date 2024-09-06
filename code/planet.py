@@ -1,30 +1,30 @@
 import math
 import pygame
-from station import Station
 from tile import Tile
 from druid import Druid
 from inventar import Inventar
+from rakete import Rakete
 from settings import *
 
 
 class Planet():
     def __init__(self, name, info, game):
         self.name = name
-        if name == "Erde":
-            print("ja")
         self.T = info["T"]
 
         self.p = info["a"] * (1 - info["e"])
         self.a = info["a"] * (1 + info["e"])
 
 
-        self.station = Station(name, info['buildings'])
-
         self.radius = info["radius"] * 80
 
         self.map = info['map']
 
         self.selected = False
+
+        self.raketen = []
+        self.druids = []
+        self.fahrzeuge = []
 
 
 
@@ -34,13 +34,21 @@ class Planet():
 
         self.game = game
 
+        self.create_rocket()
+
+        if name == "Erde":
+            self.druids.append(Inventar())
+
+    def create_rocket(self):
+        self.raketen.append(Rakete())
+
     def start_fly(self):
-        if self.station.raketen == []:
+        if self.raketen == []:
             return
         
-        self.station.raketen[0].druids.append(Inventar(self.druid.items))
+        self.raketen[0].druids.append(Inventar(self.druid.items))
         self.druid.kill()
-        self.station.druids = []
+        self.druids = []
         self.game.planet_fly_planer[0] = self
         self.game.change_to_space_view()
         self.game.click_on_planet = self.game.select_for_fly
@@ -63,7 +71,7 @@ class Planet():
 
         #self.create_druid(2, 2, "white", [self.all_sprites, self.all_druids])
 
-        for druid in self.station.druids:
+        for druid in self.druids:
             print(druid.items)
             self.druid = Druid(2, 2, "white", [self.all_sprites, self.all_druids], self, druid.items)
 

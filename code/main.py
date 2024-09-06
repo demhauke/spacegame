@@ -101,9 +101,8 @@ class Game():
 
     def planet_station(self):
         self.gui.update(self)
-        self.current_planet.station.update()
         self.current_planet.update(self)
-        self.gui.render()
+        self.gui.draw()
 
     def space_overview(self):
         time = (pygame.time.get_ticks() + self.starttime) / self.speed
@@ -118,9 +117,9 @@ class Game():
 
 
             if rakete.get_landet(time):
-                rakete.destination_planet.station.fahrzeuge.append(rakete)
+                rakete.destination_planet.fahrzeuge.append(rakete)
                 for druid in rakete.druids:
-                    rakete.destination_planet.station.druids.append(druid)
+                    rakete.destination_planet.druids.append(druid)
                 self.all_rockets.remove(rakete)
 
         x, y = pygame.mouse.get_pos()
@@ -148,8 +147,8 @@ class Game():
         
         #pygame.draw.line(self.screen, "white", (self.screen_width / 2 + self.planet_fly_planer[0].get_x(time) / self.map_scale, self.screen_height / 2 + self.planet_fly_planer[0].get_y(time) / self.map_scale), (self.screen_width / 2 + self.planet_fly_planer[1].get_x(time) / self.map_scale, self.screen_height / 2 + self.planet_fly_planer[1].get_y(time) / self.map_scale))
         
-        self.all_rockets.append(self.planet_fly_planer[0].station.raketen[0])
-        self.planet_fly_planer[0].station.raketen[0].fly(self.planet_fly_planer[0], self.planet_fly_planer[1], time)
+        self.all_rockets.append(self.planet_fly_planer[0].raketen[0])
+        self.planet_fly_planer[0].raketen[0].fly(self.planet_fly_planer[0], self.planet_fly_planer[1], time)
 
         self.planet_fly_planer = [False, False]
 
@@ -160,26 +159,6 @@ class Game():
 
         #self.all_rockets.append(self.planet_fly_planer[0].station.raketen[0])
 
-    def station_do_activity(self):
-        self.current_planet.station.do_activity()
-        self.gui.render()
-
-    def station_select_activity(self, index):
-        self.current_planet.station.select_activity(index)
-
-    def station_select_human(self, index):
-        self.current_planet.station.select_human(index)
-
-    def station_select_rakete(self, index):
-        self.current_planet.station.select_rakete(index)
-
-    def station_change_item_from_rocket_to_station(self, index):
-        self.current_planet.station.change_item_at_station(index, self.current_planet.station.raketen[self.current_planet.station.selected_raketen_index], self.current_planet.station)
-        self.gui.render()
-
-    def station_change_item_from_station_to_rocket(self, index):
-        self.current_planet.station.change_item_at_station(index, self.current_planet.station, self.current_planet.station.raketen[self.current_planet.station.selected_raketen_index])
-        self.gui.render()
 
     def select_for_fly(self, planet):
         if self.planet_fly_planer[0] == False:

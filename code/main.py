@@ -23,12 +23,11 @@ class Game():
         self.map_scale = 1
 
 
+        self.create_gui()
         self.create_planets()
 
         self.current_planet = self.all_planets[2]
 
-
-        self.create_gui()
 
         self.current_mode = self.space_overview
 

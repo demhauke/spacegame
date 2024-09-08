@@ -6,9 +6,6 @@ class Rakete(Inventar):
         super().__init__()
         self.druids = []
 
-        self.x = 0
-        self.y = 0
-
         self.start_planet = None
         self.destination_planet = None
 
@@ -38,7 +35,7 @@ class Rakete(Inventar):
 
         self.landing_time = current_time + math.sqrt((old.get_x(current_time) - new.get_x(current_time)) ** 2 + (old.get_y(current_time) - new.get_y(current_time)) ** 2) / self.velocity
 
-        self.angle = -1* math.atan(math.atan((self.destination_planet.get_y(self.start_time) - self.start_planet.get_y(self.start_time)) / (self.destination_planet.get_x(self.start_time) - self.start_planet.get_x(self.start_time))))
+        self.angle = (-1) * math.atan2((self.destination_planet.get_y(self.start_time) - self.start_planet.get_y(self.start_time)) , (self.destination_planet.get_x(self.start_time) - self.start_planet.get_x(self.start_time)))
         print(f"starte bei {old.name}")
 
     def update(self):

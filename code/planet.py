@@ -1,6 +1,6 @@
 import math
 import pygame
-from tile import Tile
+from tile import Tile, Camera
 from druid import Druid
 from inventar import Inventar
 from rakete import Rakete
@@ -28,7 +28,7 @@ class Planet():
 
 
 
-        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites = Camera(game.screen)
         self.all_action_items = pygame.sprite.Group()
         self.all_druids = pygame.sprite.Group()
 
@@ -96,8 +96,7 @@ class Planet():
     def update(self, game):
         self.all_sprites.update()
         game.screen.fill("gray")
-        self.all_sprites.draw(game.screen)
-        #self.all_druids.draw(game.screen)
+        self.all_sprites.draw(self.druid)
 
 
 

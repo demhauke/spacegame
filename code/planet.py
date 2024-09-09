@@ -63,17 +63,21 @@ class Planet():
                 #    pass
                     #Tile(x, y, 60, "gray", self.all_sprites)
                 if value == 2:
-                    Tile(x, y, "red", [self.all_sprites, self.all_action_items], "Steine")
+                    Tile(x, y, "red", [self.all_sprites, self.all_action_items], "Steine" )
                 elif value == 3:
-                    Tile(x, y, "purple", [self.all_sprites, self.all_action_items], "rakete", self.start_fly)
+                    Tile(x, y, "purple", [self.all_sprites, self.all_action_items], "rakete", self.start_fly, image="Rocket")
+
+                    for druid in self.druids:
+                        self.druid = Druid(x, y, "white", [self.all_sprites, self.all_druids], self, druid.items, image="Rover")
+
                 elif value == 4:
-                    Tile(x, y, "yellow", [self.all_sprites, self.all_action_items], "Gold")
+                    Tile(x, y, "yellow", [self.all_sprites, self.all_action_items], "Kupfer", image="Kupfer")
 
         #self.create_druid(2, 2, "white", [self.all_sprites, self.all_druids])
 
-        for druid in self.druids:
-            print(druid.items)
-            self.druid = Druid(2, 2, "white", [self.all_sprites, self.all_druids], self, druid.items)
+  #      for druid in self.druids:
+ #           print(druid.items)
+#            self.druid = Druid(4, 4, "white", [self.all_sprites, self.all_druids], self, druid.items, image="Rover")
 
 
     def get_x(self, time):
@@ -95,7 +99,7 @@ class Planet():
     
     def update(self, game):
         self.all_sprites.update()
-        game.screen.fill("gray")
+        game.screen.fill((224, 158, 122))
         self.all_sprites.draw(self.druid)
 
 

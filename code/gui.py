@@ -60,10 +60,11 @@ class Text:
             return
         self.rendered_text = self.font.render(value, True, self.color, None) #check this None
         self.rect = self.rendered_text.get_rect(topleft=self.pos)
-        self.surface = pygame.Surface(self.rect.size, pygame.SRCALPHA)
-        self.surface.fill((255, 255, 255, 200))
         self.rect.x = self.pos[0] - self.rendered_text.get_width() / 2
         self.rect = self.rect.inflate(self.offset, self.offset)
+
+        self.surface = pygame.Surface(self.rect.size, pygame.SRCALPHA)
+        self.surface.fill((255, 255, 255, 150))
 
     def draw(self, screen):
         #self.surface.fill((255, 255, 255, 128))

@@ -7,6 +7,7 @@ class Inventar:
         else:
             self.items = {
                 "Steine": 0,
+                "Kupfer": 0,
                 "Gold": 0,
                 "Eisen": 0
             }

@@ -5,8 +5,8 @@ import pygame
 
 
 class Druid(Entity, Inventar):
-    def __init__(self, x, y, color, group, planet, items=False):
-        super().__init__(x, y, color, group)
+    def __init__(self, x, y, color, group, planet, items=False, image="Steine"):
+        super().__init__(x, y, color, group, image=image)
         Inventar().__init__(items)
         self.direction = pygame.math.Vector2()
 
@@ -15,6 +15,7 @@ class Druid(Entity, Inventar):
         else:
             self.items = {
                 "Steine": 0,
+                "Kupfer": 0,
                 "Gold": 0,
                 "Eisen": 0
             }

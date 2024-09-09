@@ -8,8 +8,8 @@
 import random
 
 # Map-Größe definieren
-tiles_x = 25  # Anzahl der Kacheln in der Breite
-tiles_y = 9   # Anzahl der Kacheln in der Höhe
+tiles_x = 50  # Anzahl der Kacheln in der Breite
+tiles_y = 20   # Anzahl der Kacheln in der Höhe
 
 # Zufällige planet_map erstellen
 

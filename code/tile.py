@@ -25,11 +25,14 @@ class Camera(pygame.sprite.Group):
 
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, x, y, color, group, item=None, func=None):
+    def __init__(self, x, y, color, group, item=None, func=None, image="Steine"):
         super().__init__(group)
         
-        self.image = pygame.Surface((TILESIZE, TILESIZE))
-        self.image.fill(color)
+        #self.image = pygame.Surface((TILESIZE, TILESIZE))
+        #self.image.fill(color)
+        self.image = pygame.image.load(f"spacegame/graphics/{image}.png")
+        self.image = pygame.transform.scale(self.image, (TILESIZE, TILESIZE))
+        
         self.rect = self.image.get_rect()
 
         self.rect.x = x * TILESIZE

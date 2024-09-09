@@ -2,8 +2,8 @@ from tile import Tile
 import pygame
 
 class Entity(Tile):
-    def __init__(self, x, y, color, group):
-        super().__init__(x, y, color, group)
+    def __init__(self, x, y, color, group, image="Steine"):
+        super().__init__(x, y, color, group, image=image)
 
         self.speed = 4
 

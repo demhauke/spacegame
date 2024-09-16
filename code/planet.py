@@ -96,6 +96,9 @@ class Planet():
 
     def kill_on_map(self, x, y):
         self.map[int(y)][int(x)] = 0
+
+    def tab_pressed(self):
+        self.game.tab_pressed()
     
     def update(self, game):
         self.all_sprites.update()

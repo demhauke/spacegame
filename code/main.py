@@ -36,6 +36,7 @@ class Game():
         self.planet_fly_planer = [False, False]
 
 
+
     def run(self):
         running = True
         while running:
@@ -91,12 +92,28 @@ class Game():
 
         self.planet_station_gui = GUI(self)
 
+        self.inventory_gui = GUI(self)
+
+
         self.gui = self.planet_station_gui
 
 
         self.planet_station_gui.create_text([self.screen_width / 2, 20], "name")
 
         self.planet_station_gui.create_button([self.screen_width / 2, self.screen_height - 100], "Map", self.change_to_space_view)
+
+
+
+        self.inventory_gui.create_text([self.screen_width / 2, 20], "Inventar")
+
+    def tab_pressed(self):
+        if self.gui == self.planet_station_gui:
+            self.gui = self.inventory_gui
+            self.gui.render()
+            return
+        
+        self.gui = self.planet_station_gui
+
 
     def planet_station(self):
         self.gui.update(self)

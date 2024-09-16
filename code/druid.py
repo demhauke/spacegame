@@ -48,6 +48,8 @@ class Druid(Entity, Inventar):
 
         self.check_action_e(keys, collision_sprite)
 
+        self.check_action_tab(keys)
+
     def check_action_e(self, keys, collision_sprite):
         if keys[pygame.K_e] == False:
             return
@@ -67,6 +69,12 @@ class Druid(Entity, Inventar):
 
             if collision_sprite.item == "rakete":
                 collision_sprite.func()
+
+    def check_action_tab(self, keys):
+        if keys[pygame.K_TAB] == False:
+            return
+        
+        self.planet.tab_pressed()
             
 
 

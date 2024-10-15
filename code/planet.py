@@ -68,7 +68,7 @@ class Planet():
                     Tile(x, y, "purple", [self.all_sprites, self.all_action_items], "rakete", self.start_fly, image="Rocket")
 
                     for druid in self.druids:
-                        self.druid = Druid(x, y, "white", [self.all_sprites, self.all_druids], self, druid.items, image="Rover")
+                        self.druid = Druid(x, y + 1, "white", [self.all_sprites, self.all_druids], self, druid.items, image="Rover")
 
                 elif value == 4:
                     Tile(x, y, "yellow", [self.all_sprites, self.all_action_items], "Kupfer", image="Kupfer")
@@ -97,13 +97,17 @@ class Planet():
     def kill_on_map(self, x, y):
         self.map[int(y)][int(x)] = 0
 
-    def tab_pressed(self):
-        self.game.tab_pressed()
+    def update_inventory_gui(self, inventar):
+        self.game.render_inventar_gui(inventar)
+
+
     
     def update(self, game):
         self.all_sprites.update()
         game.screen.fill((224, 158, 122))
         self.all_sprites.draw(self.druid)
+        
+        #self.all_druids.draw(self.game.screen)
 
 
 

@@ -18,6 +18,12 @@ class Inventar:
             inventar.append(f"{key}: {self.items[key]}")
         return inventar
     
+    def get_inventar_amount(self):
+        inventar = []
+        for key in self.items.keys():
+            inventar.append(str(self.items[key]))
+        return inventar
+    
     def change_item(self, old, new, item, amount):
         if old.items[item] - amount < 0:
             return

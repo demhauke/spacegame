@@ -29,6 +29,16 @@ planet_map[random.randint(0, tiles_y - 1)][random.randint(0, tiles_x - 1)] = 3
 TILESIZE = 64
 
 
+item_to_path = {
+    "Steine": "spacegame/graphics/Steine.png",
+    "Rocket": "spacegame/graphics/Rocket.png",
+    "Rover": "spacegame/graphics/Rover.png",
+    "Kupfer": "spacegame/graphics/Kupfer.png",
+    "Gold": "spacegame/graphics/Steine.png",
+    "Eisen": "spacegame/graphics/Steine.png"
+}
+
+
 planeten = {
     "Merkur": {'a': 57.91, 'T': 0.24, 'e': 0.2056, 'radius': 0.03504, 'buildings': [], 'map': create_planet_map()},
     "Venus": {'a': 108.2, 'T': 0.62, 'e': 0.0067, 'radius': 0.08690, 'buildings': [], 'map': create_planet_map()},

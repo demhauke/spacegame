@@ -46,6 +46,10 @@ class Game():
                 if event.type == pygame.QUIT:
                     running = False
 
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_TAB:
+                        self.tab_pressed()
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1: 
                         self.mousebuttonpressed = True
@@ -106,13 +110,29 @@ class Game():
 
         self.inventory_gui.create_text([self.screen_width / 2, 20], "Inventar")
 
+        self.inventory_gui.create_surface(0, 0, self.screen_width, self.screen_height, (255, 255, 255, 150))
+
+        self.inventory_gui.create_list_of_elements({
+                "Steine": 0,
+                "Kupfer": 0,
+                "Gold": 0,
+                "Eisen": 0
+            },
+            [100, 100]      
+            )
+
     def tab_pressed(self):
         if self.gui == self.planet_station_gui:
             self.gui = self.inventory_gui
             self.gui.render()
+            self.render_inventar_gui(self.current_planet.druids[0].get_inventar_amount())           
             return
         
         self.gui = self.planet_station_gui
+
+    def render_inventar_gui(self, inventar):
+        print(inventar)
+        self.inventory_gui.all_elements[-1].render_list(inventar)
 
 
     def planet_station(self):

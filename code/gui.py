@@ -1,5 +1,7 @@
 import pygame
 import time
+from settings import item_to_path
+
 
 def nothing(a=1):
     print(a)
@@ -20,8 +22,11 @@ class GUI:
     def create_text(self, pos, text, color="black", display_not = "", background_color=(0, 0, 0)):
         self.all_elements.append(Text(pos, text, self.font, color, display_not, background_color))
 
-    def create_list_of_elements(self, pos, get_liste, get_selection_index, color="black", get_pressed=nothing, display_not = "", background_color=(0, 0, 0)):
-        self.all_elements.append(List_of_elements(pos, get_liste, "Type", self.font, color, get_pressed, display_not, background_color, get_selection_index))
+    def create_list_of_elements(self, item_list, start_pos):
+        self.all_elements.append(List_of_Elements(item_list, start_pos, self.font))
+
+    def create_surface(self, x, y, width, height, color):
+        self.all_elements.append(Surface(x, y, width, height, color))
 
     def update(self, game):
         for element in self.all_elements:
@@ -49,15 +54,19 @@ class Text:
 
         self.offset = 3
         
-    def render(self, info):
-        try: 
+    def render(self, info, text=False):
+        if text != False:
+            value = text
+        else:
+            try: 
+                
+                value = str(getattr(info, self.text))
+            except:
+                value = self.text
             
-            value = str(getattr(info, self.text))
-        except:
-            value = self.text
-        
-        if value == self.display_not:
-            return
+            if value == self.display_not:
+                return
+            
         self.rendered_text = self.font.render(value, True, self.color, None) #check this None
         self.rect = self.rendered_text.get_rect(topleft=self.pos)
         self.rect.x = self.pos[0] - self.rendered_text.get_width() / 2
@@ -71,6 +80,9 @@ class Text:
         #pygame.draw.rect(screen, self.background_color, self.rect)
         screen.blit(self.surface, self.rect.topleft)
         screen.blit(self.rendered_text, (self.pos[0] - self.rendered_text.get_width() / 2, self.pos[1]))
+
+    def get_width(self):
+        return self.rect.width
         
 
     def update(self, game):
@@ -93,75 +105,63 @@ class Button(Text):
             self.func()
             time.sleep(0.1)
 
-class List_of_elements():
-    def __init__(self, pos, get_liste, Type, font, color, get_pressed, display_not, background_color, get_selection_index):
-        self.pos = pos
-        self.get_liste = get_liste
-        self.Type = Type
-        
-        self.font = font
-        self.color = color
-
-        self.get_pressed = get_pressed
-        self.get_selection_index = get_selection_index
-
-        self.display_not = display_not
-
-        self.background_color = background_color
-
-
-        
-    def render(self, screen, reference):
-
-        self.screen = screen
-        self.reference = reference
-
+class List_of_Elements():
+    def __init__(self, item_list, start_pos, font):
         self.all_elements = []
-        liste = getattr(reference, self.get_liste)
-        print(liste)
+        self.all_text_elements = []
+        self.all_surface = []
+        x = start_pos[0]
+        y = start_pos[1]
 
-        x = self.pos[0]
+        for item in item_list.items():
+            print(item)
+            self.all_surface.append(Surface(x - 30, y - 20, 10, 10, "gray", item_to_path[item[0]]))
+            self.all_text_elements.append(Text([x, y], str(item[1]), font, "black", "", (0, 0, 0)))
 
-        for index, value in enumerate(liste):
-            value = str(value)
-            value += " "
-            print(value)
-            self.all_elements.append(Text((x, self.pos[1]), str(value), self.font, self.color, self.display_not, self.background_color))
+            x += 150
 
-            self.all_elements[index].render(screen, reference)
+        self.all_elements = self.all_surface + self.all_text_elements
 
-            x += self.all_elements[index].rendered_text.get_width() * 1.5
+    def render(self, info):
+        for element in self.all_elements:
+            element.render(info)
 
-    def check_selected(self, index, element):
-        element.background_color = "gray"
+    def render_list(self, info):
+        for index, element in enumerate(self.all_text_elements):
+            print(index, element)
+            print(info[index])
+            element.render("s", text=info[index])
 
-        try:
+        self.all_elements = self.all_surface + self.all_text_elements
 
-            if index == getattr(self.reference, self.get_selection_index):
-                element.background_color = "pink"
-        except:
-            pass
+    def draw(self, screen):
+        for element in self.all_elements:
+            element.draw(screen)
 
     def update(self, game):
-        if  not pygame.mouse.get_pressed()[0]:
-            return
+        for element in self.all_elements:
+            element.update(game)
         
-        #self.check_selected()
+class Surface():
+    def __init__(self, x, y, width, height, color, image=False):
+        #self.rect = pygame.rect.Rect(x, y, width, height)
 
-        for index, element in enumerate(self.all_elements):
-            if element.rect.collidepoint(pygame.mouse.get_pos()):
-            
-                self.get_pressed(index)
-                #print(index)
-                #element.background_color = "pink"
+        if image != False:
+            print("Bild")
+            print(x, y)
+            self.surface = pygame.image.load(image)
+            self.rect = pygame.rect.Rect(x, y, self.surface.get_width(), self.surface.get_height())
+        else:
+            self.rect = pygame.rect.Rect(x, y, width, height)
+            self.surface = pygame.Surface(self.rect.size, pygame.SRCALPHA)   
 
-            self.check_selected(index, element)
+            self.surface.fill(color)
 
-            self.reference.update()
+    def draw(self, screen):
+        screen.blit(self.surface, self.rect.topleft)
 
-            if not self in game.gui.all_elements:
-                return
-            element.render(self.screen, self.reference)
-        
-        
-        
+    def render(self, info):
+        pass
+
+    def update(self, info):
+        pass

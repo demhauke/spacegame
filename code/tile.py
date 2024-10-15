@@ -1,5 +1,5 @@
 import pygame
-from settings import TILESIZE
+from settings import *
 
 class Camera(pygame.sprite.Group):
     def __init__(self, display):
@@ -30,7 +30,7 @@ class Tile(pygame.sprite.Sprite):
         
         #self.image = pygame.Surface((TILESIZE, TILESIZE))
         #self.image.fill(color)
-        self.image = pygame.image.load(f"graphics/{image}.png")
+        self.image = pygame.image.load(item_to_path[image])
         self.image = pygame.transform.scale(self.image, (TILESIZE, TILESIZE))
         
         self.rect = self.image.get_rect()

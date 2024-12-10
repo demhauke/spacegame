@@ -39,6 +39,10 @@ class Planet():
         if name == "Erde":
             self.druids.append(Inventar())
 
+        #self.druids.append(Inventar())
+
+        
+
     def create_rocket(self):
         self.raketen.append(Rakete())
 
@@ -65,7 +69,7 @@ class Planet():
                 if value == 2:
                     Tile(x, y, "red", [self.all_sprites, self.all_action_items], "Steine" )
                 elif value == 3:
-                    Tile(x, y, "purple", [self.all_sprites, self.all_action_items], "rakete", self.start_fly, image="Rocket")
+                    self.druid =  Tile(x, y, "purple", [self.all_sprites, self.all_action_items], "rakete", self.start_fly, image="Rocket")
 
                     for druid in self.druids:
                         self.druid = Druid(x, y + 1, "white", [self.all_sprites, self.all_druids], self, druid.items, image="Rover")
@@ -86,6 +90,9 @@ class Planet():
     def get_y(self, time):
         return self.p * math.sin(time * 2 * math.pi / self.T)
     
+    def get_druid(self):
+        return self.druid
+    
     def check_collision(self, pos, time, radius):
         if (self.get_x(time) - pos[0]) ** 2 + (self.get_y(time) - pos[1]) ** 2 <= radius ** 2:
             return True
@@ -104,7 +111,7 @@ class Planet():
     
     def update(self, game):
         self.all_sprites.update()
-        game.screen.fill((224, 158, 122))
+        game.screen.fill(backgroundcolor_per_planet[self.name])
         self.all_sprites.draw(self.druid)
         
         #self.all_druids.draw(self.game.screen)

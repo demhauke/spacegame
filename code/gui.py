@@ -16,14 +16,14 @@ class GUI:
 
         self.font = pygame.font.SysFont(None, 48)
 
-    def create_button(self, pos, text, func=nothing, color="black", display_not = "", background_color=(0, 0, 0, 125), selection_possible=False):
-        self.all_elements.append(Button(pos, text, self.font, color, func, display_not, background_color, selection_possible))
+    def create_button(self, pos, text, getter=False, func=nothing, color="black", display_not = "", background_color=(0, 0, 0, 125), selection_possible=False):
+        self.all_elements.append(Button(pos, text, getter, self.font, color, func, display_not, background_color, selection_possible))
 
-    def create_text(self, pos, text, color="black", display_not = "", background_color=(0, 0, 0)):
-        self.all_elements.append(Text(pos, text, self.font, color, display_not, background_color))
+    def create_text(self, pos, text, getter=False, color="black", display_not = "", background_color=(0, 0, 0)):
+        self.all_elements.append(Text(pos, text, getter, self.font, color, display_not, background_color))
 
-    def create_list_of_elements(self, item_list, start_pos):
-        self.all_elements.append(List_of_Elements(item_list, start_pos, self.font))
+    def create_list_of_elements(self, item_list, getter, start_pos):
+        self.all_elements.append(List_of_Elements(item_list, getter, start_pos, self.font))
 
     def create_surface(self, x, y, width, height, color):
         self.all_elements.append(Surface(x, y, width, height, color))
@@ -43,7 +43,7 @@ class GUI:
             element.draw(self.screen)
 
 class Text:
-    def __init__(self, pos, text, font, color, display_not, background_color):
+    def __init__(self, pos, text, getter, font, color, display_not, background_color):
         self.pos = pos
         self.text = text
         self.font = font
@@ -53,19 +53,20 @@ class Text:
         self.display_not = display_not
 
         self.offset = 3
+
+        if getter != False:
+            self.get_text = getter
+        else:
+            self.get_text = self.get_text_default
+        
+
+
+    def get_text_default(self):
+        return self.text
         
     def render(self, info, text=False):
-        if text != False:
-            value = text
-        else:
-            try: 
-                
-                value = str(getattr(info, self.text))
-            except:
-                value = self.text
-            
-            if value == self.display_not:
-                return
+        value = self.get_text()
+        print(value)
             
         self.rendered_text = self.font.render(value, True, self.color, None) #check this None
         self.rect = self.rendered_text.get_rect(topleft=self.pos)
@@ -90,8 +91,8 @@ class Text:
 
 
 class Button(Text):
-    def __init__(self, pos, text, font, color, func, display_not, background_color, selection_possible):
-        super().__init__(pos, text, font, color, display_not, background_color)
+    def __init__(self, pos, text, getter, font, color, func, display_not, background_color, selection_possible):
+        super().__init__(pos, text, getter, font, color, display_not, background_color)
         self.func = func
 
         self.selection_possible = selection_possible    
@@ -106,7 +107,7 @@ class Button(Text):
             time.sleep(0.1)
 
 class List_of_Elements():
-    def __init__(self, item_list, start_pos, font):
+    def __init__(self, item_list, getter, start_pos, font):
         self.all_elements = []
         self.all_text_elements = []
         self.all_surface = []
@@ -116,7 +117,7 @@ class List_of_Elements():
         for item in item_list.items():
             print(item)
             self.all_surface.append(Surface(x - 30, y - 20, 10, 10, "gray", item_to_path[item[0]]))
-            self.all_text_elements.append(Text([x, y], str(item[1]), font, "black", "", (0, 0, 0)))
+            self.all_text_elements.append(Text([x, y], str(item[1]), False, font, "black", "", (0, 0, 0)))
 
             x += 150
 
@@ -130,6 +131,7 @@ class List_of_Elements():
         for index, element in enumerate(self.all_text_elements):
             print(index, element)
             print(info[index])
+            element.text = info[index]
             element.render("s", text=info[index])
 
         self.all_elements = self.all_surface + self.all_text_elements

@@ -27,13 +27,20 @@ class Game():
         self.create_planets()
 
         self.current_planet = self.all_planets[2]
+        self.selected_planet_index = 2
 
 
         self.current_mode = self.space_overview
+        #self.current_mode = self.planet_station
 
         self.click_on_planet = self.change_to_planet_view
 
         self.planet_fly_planer = [False, False]
+
+
+        self.space_overview_gui.render()
+
+        self.enter_pressed = self.enter_pressed_space_view
 
 
 
@@ -50,6 +57,15 @@ class Game():
                     if event.key == pygame.K_TAB:
                         self.tab_pressed()
 
+                    elif event.key == pygame.K_LEFT:
+                        self.left_pressed()
+
+                    elif event.key == pygame.K_RIGHT:
+                        self.right_pressed()
+
+                    elif event.key == pygame.K_e or event.key == pygame.K_RETURN:
+                        self.enter_pressed()
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1: 
                         self.mousebuttonpressed = True
@@ -58,8 +74,6 @@ class Game():
 
 
                 self.check_inputs(event)
-
-
 
     def update(self):
         self.current_mode()
@@ -91,20 +105,34 @@ class Game():
             if planet.name == name:
                 return planet
 
+    def get_name_of_selected_planet(self):
+        return self.all_planets[self.selected_planet_index].name
+    
+    def get_name_of_current_planet(self):
+        return self.current_planet.name
+    
+    def get_current_druid_items(self):
+        return self.current_planet.get_druid().items
+
     def create_gui(self):
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
 
         self.planet_station_gui = GUI(self)
-
         self.inventory_gui = GUI(self)
 
+        self.space_overview_gui = GUI(self)
 
-        self.gui = self.planet_station_gui
+        self.gui = self.space_overview_gui
 
 
-        self.planet_station_gui.create_text([self.screen_width / 2, 20], "name")
+        #self.space_overview_gui.create_button)
 
-        self.planet_station_gui.create_button([self.screen_width / 2, self.screen_height - 100], "Map", self.change_to_space_view)
+        self.space_overview_gui.create_text([self.screen_width / 2, 20], "Planet", getter=self.get_name_of_selected_planet)
+
+
+        self.planet_station_gui.create_text([self.screen_width / 2, 20], "name", getter=self.get_name_of_current_planet)
+
+        self.planet_station_gui.create_button([self.screen_width / 2, self.screen_height - 100], "Map", func=self.change_to_space_view)
 
 
 
@@ -118,6 +146,17 @@ class Game():
                 "Gold": 0,
                 "Eisen": 0
             },
+            self.get_current_druid_items,
+            [100, self.screen_height - 100]
+            )
+
+        self.inventory_gui.create_list_of_elements({
+                "Steine": 0,
+                "Kupfer": 0,
+                "Gold": 0,
+                "Eisen": 0
+            },
+            self.get_current_druid_items,
             [100, 100]      
             )
 
@@ -130,10 +169,31 @@ class Game():
         
         self.gui = self.planet_station_gui
 
+    def left_pressed(self):
+        if self.current_mode != self.space_overview:
+            return
+        if self.selected_planet_index > 0:
+            self.selected_planet_index += -1
+
+        self.render_gui()
+
+    def right_pressed(self):
+        if self.current_mode != self.space_overview:
+            return
+        if self.selected_planet_index < len(self.all_planets) - 1: 
+            self.selected_planet_index += 1
+
+        self.render_gui()
+
+    def enter_pressed(self):
+        print("enter")
+
     def render_inventar_gui(self, inventar):
         print(inventar)
         self.inventory_gui.all_elements[-1].render_list(inventar)
 
+    def render_gui(self):
+        self.gui.render()
 
     def planet_station(self):
         self.gui.update(self)
@@ -156,7 +216,10 @@ class Game():
                 rakete.destination_planet.fahrzeuge.append(rakete)
                 for druid in rakete.druids:
                     rakete.destination_planet.druids.append(druid)
+
+                self.current_planet = rakete.destination_planet
                 self.all_rockets.remove(rakete)
+                
 
         x, y = pygame.mouse.get_pos()
         x = (x - self.screen_width / 2)
@@ -164,6 +227,9 @@ class Game():
 
         for planet in self.all_planets:
             pygame.draw.circle(self.screen, "white", (self.screen_width / 2 + planet.get_x(time) / self.map_scale, self.screen_height / 2 + planet.get_y(time) / self.map_scale), planet.radius / self.map_scale)
+
+            if planet.druids != []:
+                pygame.draw.circle(self.screen, "purple", (self.screen_width / 2 + planet.get_x(time) / self.map_scale, self.screen_height / 2 + planet.get_y(time) / self.map_scale), planet.radius / self.map_scale * 2, 1)
 
             if self.mousebuttonpressed == False:
                 continue
@@ -173,6 +239,10 @@ class Game():
                 self.click_on_planet(planet)
                 self.mousebuttonpressed = False
                 break
+
+        pygame.draw.circle(self.screen, "blue", (self.screen_width / 2 + self.all_planets[self.selected_planet_index].get_x(time) / self.map_scale, self.screen_height / 2 + self.all_planets[self.selected_planet_index].get_y(time) / self.map_scale), self.all_planets[self.selected_planet_index].radius / self.map_scale * 3, 1)
+
+        self.gui.draw()
 
         if self.planet_fly_planer[0] == False:
             return
@@ -209,14 +279,24 @@ class Game():
         self.current_mode = self.planet_station
         planet.create_map()
         self.planet_station_gui.render()
+        self.gui = self.planet_station_gui
 
-
+        self.enter_pressed = self.enter_pressed_planet_view
 
     def change_to_space_view(self):
         for sprite in self.current_planet.all_sprites:
             sprite.kill()
         self.current_mode = self.space_overview
+        self.space_overview_gui.render()
+        self.gui = self.space_overview_gui
 
+        self.enter_pressed = self.enter_pressed_space_view
+
+    def enter_pressed_space_view(self):
+        self.change_to_planet_view(self.all_planets[self.selected_planet_index])
+
+    def enter_pressed_planet_view(self):
+        print("Enter")
         
 
 game = Game()

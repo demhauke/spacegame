@@ -8,8 +8,8 @@
 import random
 
 # Map-Größe definieren
-tiles_x = 50  # Anzahl der Kacheln in der Breite
-tiles_y = 20   # Anzahl der Kacheln in der Höhe
+tiles_x = 200  # Anzahl der Kacheln in der Breite
+tiles_y = 100   # Anzahl der Kacheln in der Höhe
 
 # Zufällige planet_map erstellen
 
@@ -48,6 +48,17 @@ planeten = {
     "Saturn": {'a': 1434, 'T': 29.46, 'e': 0.0542, 'radius': 0.83643, 'buildings': [], 'map': create_planet_map()},
     "Uranus": {'a': 2871, 'T': 84.01, 'e': 0.0472, 'radius': 0.36425, 'buildings': [], 'map': create_planet_map()},
     "Neptun": {'a': 4495, 'T': 164.79, 'e': 0.0086, 'radius': 0.35364, 'buildings': [], 'map': create_planet_map()}
+}
+
+backgroundcolor_per_planet = {
+    "Merkur": (176, 176, 176),  # Graubraun
+    "Venus": (229, 192, 123),   # Gelblich-beige
+    "Erde": (34, 139, 34),      # Natürliches Grün (Wälder, Natur)
+    "Mars": (211, 84, 0),       # Rötlich-orange
+    "Jupiter": (212, 160, 23),  # Gelblich-braun
+    "Saturn": (245, 208, 132),  # Hellbeige-gelb
+    "Uranus": (136, 192, 208),  # Hellblau
+    "Neptun": (30, 59, 161)     # Dunkelblau
 }
 
 

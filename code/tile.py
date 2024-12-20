@@ -1,5 +1,6 @@
 import pygame
 from settings import *
+from random import randint
 
 class Camera(pygame.sprite.Group):
     def __init__(self, display):
@@ -50,6 +51,41 @@ class Tile(pygame.sprite.Sprite):
 
     def update(self):
         pass
+
+class Action_Item(Tile):
+    def __init__(self, x, y, color, group, item=None, func=None, image="Steine"):
+        super().__init__(x, y, color, group, item, func, image)
+
+    def do_action(self, player):
+        print(f"{player} Action")
+
+
+class Erz(Action_Item):
+    def __init__(self, x, y, color, group, item=None, func=None, image="Steine"):
+        super().__init__(x, y, color, group, item, func, image)
+
+        self.amount = 100
+
+    def do_action(self, player):
+            if not player.tools["Spitzhacke"]:
+               print("Keine Spitzhacke")
+               return
+            player.append_items(self.item, 3)
+            self.amount -= 3
+            if self.amount <= 0:
+                self.kill()
+            return
+
+
+class Sampling(Action_Item):
+    def __init__(self, x, y, color, group, item=None, func=None, image="Steine"):
+        super().__init__(x, y, color, group, item, func, image)
+
+        self.amount = randint(2,10)
+
+    def do_action(self, player):
+           player.append_items(self.item, self.amount)
+           self.kill()
 
 class Rocket_Station(Tile):
     def __init__(self, x, y, color, group, item=None):

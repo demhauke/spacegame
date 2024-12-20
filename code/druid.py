@@ -5,9 +5,9 @@ import pygame
 
 
 class Druid(Entity, Inventar):
-    def __init__(self, x, y, color, group, planet, items=False, image="Steine"):
+    def __init__(self, x, y, color, group, planet, items=False, tools=False, image="Steine"):
         super().__init__(x, y, color, group, image=image)
-        Inventar().__init__(items)
+        Inventar().__init__(items, tools)
         self.direction = pygame.math.Vector2()
 
         if items:
@@ -18,6 +18,12 @@ class Druid(Entity, Inventar):
                 "Kupfer": 0,
                 "Gold": 0,
                 "Eisen": 0
+            }
+        if tools:
+            self.tools = tools
+        else:
+            self.tools = {
+                "Spitzhacke": False
             }
 
         self.planet = planet
@@ -54,14 +60,16 @@ class Druid(Entity, Inventar):
 
         if collision_sprite != False:
 
-            if collision_sprite.item in self.items.keys():
+            collision_sprite.do_action(self)
 
-                self.append_items(collision_sprite.item, 5)
-                self.planet.kill_on_map(collision_sprite.rect.x / TILESIZE, collision_sprite.rect.y / TILESIZE)
-                collision_sprite.kill()
-                
-                self.planet.update_inventory_gui(self.get_inventar_amount())
-                return
+            #if collision_sprite.item in self.items.keys():
+
+             #   self.append_items(collision_sprite.item, 5)
+              #  self.planet.kill_on_map(collision_sprite.rect.x / TILESIZE, collision_sprite.rect.y / TILESIZE)
+               # collision_sprite.kill()
+                #
+            self.planet.update_inventory_gui(self.get_inventar_amount())
+                #return
             
 
             if collision_sprite.item == "rakete":

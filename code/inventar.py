@@ -1,7 +1,7 @@
-
+from settings import item_rezepte
 
 class Inventar:
-    def __init__(self, items=False):
+    def __init__(self, items=False, tools=False):
         if items:
             self.items = items
         else:
@@ -11,6 +11,20 @@ class Inventar:
                 "Gold": 0,
                 "Eisen": 0
             }
+        if tools:
+            self.tools = tools
+        else:
+            self.tools = {
+                "Spitzhacke": False
+            }
+
+    def check_if_able_to_craft(self, item_to_craft):
+        for item in item_rezepte[item_to_craft]:
+            if item[1] > self.items[item[0]]:
+                return False
+        
+        return True
+
 
     def get_inventar(self):
         inventar = []

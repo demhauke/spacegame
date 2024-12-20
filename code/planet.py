@@ -1,6 +1,6 @@
 import math
 import pygame
-from tile import Tile, Camera
+from tile import *
 from druid import Druid
 from inventar import Inventar
 from rakete import Rakete
@@ -66,16 +66,26 @@ class Planet():
                 #if value == 1:
                 #    pass
                     #Tile(x, y, 60, "gray", self.all_sprites)
-                if value == 2:
-                    Tile(x, y, "red", [self.all_sprites, self.all_action_items], "Steine" )
-                elif value == 3:
-                    self.druid =  Tile(x, y, "purple", [self.all_sprites, self.all_action_items], "rakete", self.start_fly, image="Rocket")
+                match value:
+                    case 2:
+                        Sampling(x, y, "red", [self.all_sprites, self.all_action_items], "Steine", image="Steine sampling")
+                    case 3:
+                        self.druid =  Tile(x, y, "purple", [self.all_sprites, self.all_action_items], "rakete", self.start_fly, image="Rocket")
 
-                    for druid in self.druids:
-                        self.druid = Druid(x, y + 1, "white", [self.all_sprites, self.all_druids], self, druid.items, image="Rover")
+                        for druid in self.druids:
+                            self.druid = Druid(x, y + 1, "white", [self.all_sprites, self.all_druids], self, druid.items, image="Rover")
 
-                elif value == 4:
-                    Tile(x, y, "yellow", [self.all_sprites, self.all_action_items], "Kupfer", image="Kupfer")
+                    case 4:
+                        Sampling(x, y, "yellow", [self.all_sprites, self.all_action_items], "Kupfer", image="Kupfer sampling")
+
+                    case 5:
+                        Sampling(x, y, "yellow", [self.all_sprites, self.all_action_items], "Kupfer", image="Kohle sampling")
+                    case 6:
+                        Erz(x, y, "yellow", [self.all_sprites, self.all_action_items], "Kupfer", image="Kupfer")
+                    case 7:
+                        Erz(x, y, "red", [self.all_sprites, self.all_action_items], "Steine", image="Steine")
+                    case 8:
+                        Erz(x, y, "yellow", [self.all_sprites, self.all_action_items], "Kupfer", image="Kohle")
 
         #self.create_druid(2, 2, "white", [self.all_sprites, self.all_druids])
 

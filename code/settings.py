@@ -14,11 +14,73 @@ tiles_y = 100   # Anzahl der Kacheln in der Höhe
 # Zufällige planet_map erstellen
 
 def create_planet_map():
+    # Gewichtete Wahrscheinlichkeiten für die Zufallswahl von Feldern
+    choices = [
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  # Sehr häufig
+        2, 2, 4, 4,  # Mittel häufig
+        5, 6  # Selten
+    ]
 
-    planet_map = [[random.choice([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 4]) for _ in range(tiles_x)] for _ in range(tiles_y)]
+    # Karte erstellen
+    planet_map = [[random.choice(choices) for _ in range(tiles_x)] for _ in range(tiles_y)]
+
+    # Ein Feld mit Wert 3 (nur einmal)
     planet_map[random.randint(0, tiles_y - 1)][random.randint(0, tiles_x - 1)] = 3
 
     return planet_map
+
+def create_planet_map():
+    # Karte initialisieren
+    planet_map = [[1 for _ in range(tiles_x)] for _ in range(tiles_y)]
+
+    # Seltene Items in kleinere Cluster platzieren
+    rare_items = [6, 7, 8]
+    map_area = tiles_x * tiles_y
+    cluster_density = 0.005  # Anteil der Cluster zur Gesamtfläche (z. B. 0,5% der Felder starten Cluster)
+    num_clusters = int(map_area * cluster_density)
+    cluster_size = 8   # Maximale Anzahl der Felder pro Cluster
+
+    for _ in range(num_clusters):
+        rare_item = random.choice(rare_items)
+        start_x = random.randint(0, tiles_x - 1)
+        start_y = random.randint(0, tiles_y - 1)
+
+        # Flood-Fill-Algorithmus
+        queue = [(start_x, start_y)]
+        visited = set()
+        cluster_count = 0
+
+        while queue and cluster_count < cluster_size:
+            x, y = queue.pop(0)
+            if (x, y) in visited or not (0 <= x < tiles_x and 0 <= y < tiles_y):
+                continue
+
+            visited.add((x, y))
+            planet_map[y][x] = rare_item
+            cluster_count += 1
+
+            # Nachbarn zufällig hinzufügen
+            neighbors = [
+                (x + 1, y), (x - 1, y),
+                (x, y + 1), (x, y - 1)
+            ]
+            random.shuffle(neighbors)
+            queue.extend(neighbors)
+
+    # Zufällige Platzierung von 2 und 4
+    common_items = [2, 4, 5]
+    num_common_items = int(map_area * 0.1)  # 10% der Karte mit 2 und 4
+
+    for _ in range(num_common_items):
+        x = random.randint(0, tiles_x - 1)
+        y = random.randint(0, tiles_y - 1)
+        planet_map[y][x] = random.choice(common_items)
+
+    # Ein Feld mit Wert 3 (nur einmal)
+    planet_map[random.randint(0, tiles_y - 1)][random.randint(0, tiles_x - 1)] = 3
+
+    return planet_map
+
 
     
 
@@ -31,11 +93,20 @@ TILESIZE = 64
 
 item_to_path = {
     "Steine": "spacegame/graphics/Steine.png",
+    "Steine sampling": "spacegame/graphics/Steine sampling.png",
     "Rocket": "spacegame/graphics/Rocket.png",
     "Rover": "spacegame/graphics/Rover.png",
     "Kupfer": "spacegame/graphics/Kupfer.png",
+    "Kupfer sampling": "spacegame/graphics/Kupfer sampling.png",
     "Gold": "spacegame/graphics/Steine.png",
-    "Eisen": "spacegame/graphics/Steine.png"
+    "Eisen": "spacegame/graphics/Steine.png",
+    "Kohle": "spacegame/graphics/Kohle.png",
+    "Kohle sampling": "spacegame/graphics/Kohle sampling.png"
+}
+
+
+item_rezepte = {
+    "Spitzhacke": [["Kupfer", 10]]
 }
 
 
